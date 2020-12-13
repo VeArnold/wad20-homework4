@@ -17,7 +17,6 @@ router.get('/', authorize, (request, response) => {
             return;
         }
         response.json([])
-
     })
 
 });
