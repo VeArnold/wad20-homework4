@@ -100,7 +100,44 @@ describe('Posts', () => {
 
     const wrapper = mount(Posts, {router, store, localVue});
 
-    it('1 == 1', function () {
-        expect(true).toBe(true)
+    it('Exactly as many posts are rendered as contained in testData.', function () {
+        const postsRendered = wrapper.findAll('.post');
+        expect(testData.length).toEqual(postsRendered.length);
+    });
+});
+
+describe('Media', () => {
+
+    const wrapper = mount(Posts, {router, store, localVue});
+
+    it('Media properties are rendered correctly based on type.', function () {
+        const posts = wrapper.findAll('.post');
+
+        for (let i = 0; i < posts.length; i++) {
+            let post = posts.at(i);
+            if (post.html().includes('post-image')) {
+                post = post.find('.post-image')
+                if (post.html().includes('img'))
+                    expect(testData[i].media.type).toEqual('image')
+                else if (post.html().includes('video'))
+                    expect(testData[i].media.type).toEqual('video')
+            } else
+                expect(testData[i].media).toEqual(null)
+
+        }
+    });
+});
+
+describe('Date', () => {
+
+    const wrapper = mount(Posts, { router, store, localVue });
+
+    const moment = require('moment');
+    it('Post create time should be displayed in the correct format.', () => {
+        for (let i = 0; i < testData.length; i++) {
+            const postDate = wrapper.find('.post-author > small').text();
+            const testDate = moment(testData[i].createTime).format('LLLL');
+            expect(postDate).toEqual(testDate);
+        }
     });
 });
